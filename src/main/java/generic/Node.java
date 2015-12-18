@@ -1,4 +1,4 @@
-package interfaces;
+package generic;
 
 /**
  * Created by jonathan on 18-12-15.

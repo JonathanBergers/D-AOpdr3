@@ -1,4 +1,4 @@
-package interfaces;
+package generic;
 
 import java.util.List;
 

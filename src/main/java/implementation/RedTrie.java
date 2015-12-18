@@ -1,6 +1,6 @@
 package implementation;
 
-import interfaces.Tree;
+import generic.Tree;
 import model.Data;
 
 /**
