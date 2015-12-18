@@ -6,13 +6,12 @@ import java.util.List;
 /**
  * Created by jonathan on 18-12-15.
  *
- * red tree node kan een letter bevatten OF een string (wanneer deze een leaf is).
- * ook heeft een red tree node extra data
+ *
  */
-public class Tree<K, V> extends Node<K, V> implements Nested<Tree<K, V>>{
+public abstract class Tree<K, V> extends Node<K, V> implements Nested<Tree<K, V>>{
 
 
-    private final Tree parent;
+    private final Tree<K, V> parent;
     private List<Tree<K, V>> children = new ArrayList<>();
 
 
@@ -52,11 +51,24 @@ public class Tree<K, V> extends Node<K, V> implements Nested<Tree<K, V>>{
         return parent;
     }
 
+
+    public Tree<K, V> getRoot(){
+
+        if(isRoot()){
+            return this;
+        }
+        return parent.getRoot();
+    }
+
     //============================//
 
 
     //========= BUSINESS LOGIC ========//
 
+
+    protected abstract void insert(K key, V value);
+
+    protected abstract void delete(K key);
 
 
 

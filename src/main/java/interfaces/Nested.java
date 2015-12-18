@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * Created by jonathan on 18-12-15.
+ *
  */
 public interface Nested<T> {
 
