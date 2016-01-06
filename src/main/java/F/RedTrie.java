@@ -29,21 +29,39 @@ public class RedTrie<D> implements Trie<D>{
         this.value = value;
     }
     public RedTrie(){
-
+        value = "";
     }
 
     public void insert(String word, D data) {
+        String letter = word.substring(0, 1);
+
         for(RedTrie<D> child : children) {
-            if(child.value.equals(word.substring(0, 1))) {
+            if(child.value.equals(letter)) {
                 if(word.length() > 1){
                     child.insert(word.substring(1), data);
+                    return;
                 } else {
                     child.data = data;
                     return;
                 }
-
+            } else if(child.value.substring(0,1).equals(letter)) {
+                String tempString = child.value;
+                D tempData = child.data;
+                children.remove(child);
+                RedTrie newChild = new RedTrie<D>(letter);
+                children.add(newChild);
+                if(tempString.length() > 1){
+                    newChild.insert(tempString.substring(1), tempData);
+                }
+                if (word.length() > 1){
+                    newChild.insert(word.substring(1), data);
+                } else {
+                    newChild.data = data;
+                }
+                return;
             }
         }
+
         RedTrie<D> newChild = new RedTrie<>(word);
         newChild.data = data;
         children.add(newChild);
@@ -55,7 +73,23 @@ public class RedTrie<D> implements Trie<D>{
     }
 
     public void delete(String word) {
+        String letter = word.substring(0, 1);
 
+        for(RedTrie<D> child : children) {
+            if (child.value.equals(letter)) {
+
+                if(word.length() > 1){
+                    child.delete(word.substring(1));
+                }
+                if(child.children.isEmpty()){
+                    children.remove(child);
+                }
+                return;
+            } else if (child.value.equals(word)){
+                children.remove(child);
+                return;
+            }
+        }
     }
 
 
