@@ -41,12 +41,12 @@ public abstract class Tree<K, V> extends Node<K, V> implements Nested<Tree<K, V>
 
 
     //=========== GETTERS ==========//
-    @Override
+
     public List<Tree<K, V>> getChildren() {
         return children;
     }
 
-    @Override
+
     public Tree<K, V> getParent() {
         return parent;
     }
