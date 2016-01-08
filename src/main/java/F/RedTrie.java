@@ -23,6 +23,8 @@ import java.util.Optional;
  */
 public class RedTrie<D, T extends Collection<D>> implements Trie<T>{
 
+    protected RedTrie<D, T> parent;
+
     private T data;
     private String key;
     private ArrayList<RedTrie<D, T>> children = new ArrayList<RedTrie<D, T>>();
@@ -36,39 +38,108 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<T>{
         this.data = data;
     }
 
-    public void insert(String word, T data) {
-        String letter = word.substring(0, 1);
 
-        for(RedTrie<D, T> child : children) {
-            if(child.hasKey(letter)) {
-                if(word.length() > 1){
-                    child.insert(word.substring(1), data);
-                    return;
-                } else {
-                    child.data.addAll(data);
-                    return;
-                }
-            } else if(child.key.substring(0,1).equals(letter)) {
-                String tempString = child.key;
-                T tempData = child.data;
-                children.remove(child);
-                RedTrie<D, T> newChild = new RedTrie<D, T>(letter, tempData);
+
+
+
+    private boolean insertRec(String word, T data){
+        // word already in trie, just add data
+        if(this.hasKey(word)){
+            this.data.addAll(data);
+        }
+        //prefix same?
+        if(key.startsWith(word.substring(0,1))) {
+
+            //add remaining
+            if (key.length() == 1) {
+                children.add(new RedTrie<D, T>(word.substring(1), data));
+                return true;
+            } else {
+
+                // DIT IS HET GEVAL DAT HET WOORD ZELFDE BEGIN HEEFT ALS KEY
+                // BIJV INSERT ABC, IN EEN TRIE MET A, en AB
+                //REGEL 123
+
+                RedTrie<D, T> newChild = new RedTrie<D, T>(key.substring(1), this.data);
                 children.add(newChild);
-                if(tempString.length() > 1){
-                    newChild.insert(tempString.substring(1), tempData);
-                }
-                if (word.length() > 1){
-                    newChild.insert(word.substring(1), data);
-                } else {
-                    newChild.data.addAll(data);
-                }
+                this.key = key.substring(0, 1);
+
+                this.insert(word.substring(1), data);
+
+            }
+
+        }
+        return false;
+
+    }
+    public void insert(String word, T data) {
+
+
+        for(RedTrie<D, T> child : children){
+
+            if(child.insertRec(word, data)){
                 return;
             }
         }
 
-        RedTrie<D, T> newChild = new RedTrie<D, T>(word, data);
-        newChild.data.addAll(data);
-        children.add(newChild);
+
+//
+//
+//
+//            final String wordPrefix = word.substring(0,1);
+//        Optional<RedTrie<D,T>> childWithPrefix = children.stream().filter(dtRedTrie -> dtRedTrie.hasKey(wordPrefix)).findFirst();
+//
+//        if(childWithPrefix.isPresent()){
+//            childWithPrefix.get().insert(word.substring(1), data);
+//            return;
+//        }else {
+//
+//        }
+//
+//        }
+//
+//        String letter = word.substring(0, 1);
+//
+//
+//        for(RedTrie<D, T> child : children) {
+//
+//            if(child.hasKey(word)){
+//                child.data.addAll(data);
+//                return;
+//            }
+//            if(child.key.startsWith(letter)){
+//
+//            }
+//
+////            if(child.hasKey(word)) {
+////                if(word.length() > 1){
+////                    child.insert(word.substring(1), data);
+////                    return;
+////                } else {
+////                    child.data.addAll(data);
+////                    return;
+////                }
+////            } else if(child.key.substring(0,1).equals(letter)) {
+////                String tempString = child.key;
+////                T tempData = child.data;
+////                children.remove(child);
+////                RedTrie<D, T> newChild = new RedTrie<D, T>(letter, data);
+////                children.add(newChild);
+////                if(tempString.length() > 1){
+////                    newChild.insert(tempString.substring(1), tempData);
+////                }
+////                if (word.length() > 1){
+////                    newChild.insert(word.substring(1), data);
+////                } else {
+////                    newChild.data.addAll(data);
+////                }
+////                return;
+////            }
+////        }
+//
+//        RedTrie<D, T> newChild = new RedTrie<D, T>(word, data);
+//        newChild.data.addAll(data);
+//        children.add(newChild);
 
     }
 

@@ -70,7 +70,7 @@ public class RedTrieTest {
             }
         });
 
-        System.out.println(trie.search("a"));
+        System.out.println(trie.toDOTString());
 
 
     }
