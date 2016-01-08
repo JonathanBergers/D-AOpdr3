@@ -52,8 +52,12 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
                 RedTrie<D, T> newChild = new RedTrie<D, T>(letter);
                 children.add(newChild);
                 if(tempString.length() > 1){
-                    newChild.insert(tempString.substring(1), null);
-                    newChild.data.addAll(tempData);
+                    for(D item : tempData){
+                        newChild.insert(tempString.substring(1), item);
+                    }
+
+
+                    //newChild.data.addAll(tempData);
                 }
                 if (word.length() > 1){
                     newChild.insert(word.substring(1), data);
@@ -88,20 +92,26 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
     }
 
     public void delete(String word) {
+
+        System.out.print("delete(" + word + ") on " + key);
+        System.out.println("\t \tkey = "+key+ "\t has data = "+!data.isEmpty());
+
         if(word == null){
             if(children.size() == 1){
-                System.out.print("this = " + key + "\t");
-                System.out.println("has data: " + !data.isEmpty());
+                System.out.println("childrensize == 1");
+                //System.out.print("this = " + key + "\t");
+                //System.out.println("has data: " + !data.isEmpty());
                 RedTrie child = children.get(0);
                 if(child.children.isEmpty()){
                     if(data.isEmpty()){
-                        System.out.println("child = " + child.key);
+                        //System.out.println("child = " + child.key);
                         System.out.println();
                         key += child.key;
                         data.addAll(child.data);
                         children.remove(child);
                     }
                 } else {
+                    System.out.println("delete child");
                     child.delete(null);
                 }
             }
@@ -115,21 +125,23 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
                     //recursive
                     child.delete(word.substring(1));
                 }
-                if(child.children.isEmpty()){
+                if(child.children.isEmpty() && child.key.equals(word)){
                     children.remove(child);
                 } else {
                     if(word.length() == 1){
                         child.data.clear();
                     }
                 }
+                delete(null);
+                break;
 
             } else if (child.key.equals(word)){
                 //the child is a string node and thus a leaf.
                 children.remove(child);
             }
-            this.delete(null);
 
         }
+
 
 
     }
