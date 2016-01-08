@@ -1,5 +1,7 @@
 package F;
 
+import java.util.List;
+
 /**
  * Interface with the default methods of the trie
  * @author Evert Duipmans
@@ -19,7 +21,7 @@ public interface Trie<D> {
      * @param word Word to search
      * @return Array with Data items
      */
-    D[] search(String word);
+    List<D> search(String word);
 
     /**
      * Delete a word (and all its data objects) from the trie

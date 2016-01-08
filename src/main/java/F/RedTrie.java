@@ -2,6 +2,8 @@ package F;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -20,14 +22,19 @@ import java.util.Collection;
  *NOW IMPLEMENTED WITH DATA CLASS..
  *
  */
-public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
+public class RedTrie<D> implements Trie<D>{
 
-    private T data = (T) new ArrayList<D>();
+    private ArrayList<D> data = new ArrayList<D>();
     private String key;
-    private ArrayList<RedTrie<D, T>> children = new ArrayList<RedTrie<D, T>>();
+    private ArrayList<RedTrie<D>> children = new ArrayList<RedTrie<D>>();
 
     public RedTrie(String key){
         this.key = key;
+    }
+
+    public RedTrie(String key, D data){
+        this.key = key;
+        this.data.add(data);
     }
     public RedTrie(){
         key = "";
@@ -36,7 +43,7 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
     public void insert(String word, D data) {
         String letter = word.substring(0, 1);
 
-        for(RedTrie<D, T> child : children) {
+        for(RedTrie<D> child : children) {
             if(child.key.equals(letter)) {
                 if(word.length() > 1){
                     child.insert(word.substring(1), data);
@@ -47,9 +54,9 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
                 }
             } else if(child.key.substring(0,1).equals(letter)) {
                 String tempString = child.key;
-                T tempData = child.data;
+                List<D> tempData = child.data;
                 children.remove(child);
-                RedTrie<D, T> newChild = new RedTrie<D, T>(letter);
+                RedTrie<D> newChild = new RedTrie<D>(letter, data);
                 children.add(newChild);
                 if(tempString.length() > 1){
                     for(D item : tempData){
@@ -68,23 +75,28 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
             }
         }
 
-        RedTrie<D, T> newChild = new RedTrie<>(word);
+        RedTrie<D> newChild = new RedTrie<>(word);
         newChild.data.add(data);
         children.add(newChild);
 
     }
 
-    public D[] search(String word) {
+    public List<D> search(String word) {
+
+        if(this.key.equals(word)){
+            return data;
+        }
         String letter = word.substring(0, 1);
-        for(RedTrie<D, T> child : children) {
+        for(RedTrie<D> child : children) {
             if (child.key.equals(letter)) {
                 if(word.length() > 1){
                     return search(word.substring(1));
                 } else {
-                    return (D[]) child.data.toArray();
+
+                    return child.data;
                 }
             } else if(child.key.equals(word)){
-                return (D[]) child.data.toArray();
+                return child.data;
             }
         }
         return null;
@@ -120,7 +132,7 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
 
         String letter = word.substring(0, 1);
         for(int i = 0; i<children.size(); i++) {
-            RedTrie<D, T> child = children.get(i);
+            RedTrie<D> child = children.get(i);
             if (child.key.equals(letter)) {
                 if(word.length() > 1){
                     //recursive
@@ -161,11 +173,11 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
         sb.append("digraph mijngraaf {\n");
 
         // Collect all the nodes
-        ArrayList<RedTrie<D, T>> lookup = new ArrayList<RedTrie<D, T>>();
+        ArrayList<RedTrie<D>> lookup = new ArrayList<RedTrie<D>>();
         lookup.add(this);
         for (int i = 0; i < lookup.size(); i++) {
-            RedTrie<D, T> currentNode = lookup.get(i);
-            for (RedTrie<D, T> child : currentNode.children) {
+            RedTrie<D> currentNode = lookup.get(i);
+            for (RedTrie<D> child : currentNode.children) {
                 if (!lookup.contains(child)) {
                     lookup.add(child);
                 }
@@ -179,8 +191,8 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
 
         // Create edges
         for (int i = 0; i < lookup.size(); i++) {
-            RedTrie<D, T> node = lookup.get(i);
-            for (RedTrie<D, T> child : node.children) {
+            RedTrie<D> node = lookup.get(i);
+            for (RedTrie<D> child : node.children) {
                 sb.append(String.format("n%d -> n%d;\n", i, lookup.indexOf(child)));
             }
         }

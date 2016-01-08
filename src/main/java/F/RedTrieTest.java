@@ -39,7 +39,7 @@ public class RedTrieTest {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        RedTrie<String, ArrayList<String>> trie = new RedTrie<>();
+        RedTrie<String> trie = new RedTrie<>();
 
         trie.insert("o", "ok");
         trie.insert("ok", "ok");

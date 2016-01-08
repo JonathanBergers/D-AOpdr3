@@ -28,7 +28,7 @@ public class RedTrieTest {
             System.out.println(end - begin);
 
 
-            RedTrie<String, List<String>> trie = new RedTrie<>();
+            RedTrie<String> trie = new RedTrie<>();
             ArrayList<String> a = new ArrayList<>();
             a.add("Jo");
             dict.forEach(new Consumer<String>() {
@@ -40,8 +40,8 @@ public class RedTrieTest {
             });
 
                     begin = System.currentTimeMillis();
-      System.out.println(Arrays.toString(trie.search("siblilance")));
-            System.out.println(Arrays.toString(trie.search("siblilance")));
+      System.out.println(trie.search("siblilance"));
+            System.out.println(trie.search("siblilance"));
             end = System.currentTimeMillis();
             System.out.println(end - begin);
 
@@ -61,7 +61,7 @@ public class RedTrieTest {
         dict.add("eea");
 
 
-        RedTrie<String, List<String>> trie = new RedTrie<>();
+        RedTrie<String> trie = new RedTrie<>();
 
 
         dict.forEach(new Consumer<String>() {
@@ -73,7 +73,7 @@ public class RedTrieTest {
             }
         });
 
-        System.out.println(Arrays.toString(trie.search("eea")));
+        System.out.println(trie.search("eea"));
         System.out.println(trie.toDOTString());
 
     }
