@@ -1,3 +1,5 @@
+package F;
+
 import F.RedTrie;
 
 import java.io.IOException;

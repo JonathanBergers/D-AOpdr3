@@ -52,7 +52,8 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
                 RedTrie<D, T> newChild = new RedTrie<D, T>(letter);
                 children.add(newChild);
                 if(tempString.length() > 1){
-                    newChild.insert(tempString.substring(1), tempData);
+                    newChild.insert(tempString.substring(1), null);
+                    newChild.data.addAll(tempData);
                 }
                 if (word.length() > 1){
                     newChild.insert(word.substring(1), data);
