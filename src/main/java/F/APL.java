@@ -1,6 +1,7 @@
 package F;
 
 
+import java.util.ArrayList;
 
 /**
  * Created by falco on 6-1-16.
@@ -8,14 +9,17 @@ package F;
 public class APL {
     public static  void main(String[] args){
 
-        RedTrie<Boolean> trie = new RedTrie();
+        RedTrie<String, ArrayList<String>> trie = new RedTrie();
 
-        trie.insert("ok", false);
-        trie.insert("o", false);
-        trie.insert("okee", true);
-        trie.insert("okedokee", true);
+        trie.insert("ok", "i");
+        trie.insert("o", "i");
+        trie.insert("okee", "i");
+        trie.insert("okedokee", "i");
+        trie.insert("okedo", "i");
 
         trie.delete("okee");
+        trie.delete("okedo");
+        trie.delete(null);
 
         System.out.println(trie.toDOTString());
 

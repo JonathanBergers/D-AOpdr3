@@ -1,6 +1,7 @@
 package F;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -19,36 +20,36 @@ import java.util.ArrayList;
  *NOW IMPLEMENTED WITH DATA CLASS..
  *
  */
-public class RedTrie<D> implements Trie<D>{
+public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
 
-    private D data;
-    private String value;
-    private ArrayList<RedTrie<D>> children = new ArrayList<RedTrie<D>>();
+    private T data = (T) new ArrayList<D>();
+    private String key;
+    private ArrayList<RedTrie<D, T>> children = new ArrayList<RedTrie<D, T>>();
 
-    public RedTrie(String value){
-        this.value = value;
+    public RedTrie(String key){
+        this.key = key;
     }
     public RedTrie(){
-        value = "";
+        key = "";
     }
 
     public void insert(String word, D data) {
         String letter = word.substring(0, 1);
 
-        for(RedTrie<D> child : children) {
-            if(child.value.equals(letter)) {
+        for(RedTrie<D, T> child : children) {
+            if(child.key.equals(letter)) {
                 if(word.length() > 1){
                     child.insert(word.substring(1), data);
                     return;
                 } else {
-                    child.data = data;
+                    child.data.add(data);
                     return;
                 }
-            } else if(child.value.substring(0,1).equals(letter)) {
-                String tempString = child.value;
-                D tempData = child.data;
+            } else if(child.key.substring(0,1).equals(letter)) {
+                String tempString = child.key;
+                T tempData = child.data;
                 children.remove(child);
-                RedTrie newChild = new RedTrie<D>(letter);
+                RedTrie newChild = new RedTrie<D, T>(letter);
                 children.add(newChild);
                 if(tempString.length() > 1){
                     newChild.insert(tempString.substring(1), tempData);
@@ -56,40 +57,78 @@ public class RedTrie<D> implements Trie<D>{
                 if (word.length() > 1){
                     newChild.insert(word.substring(1), data);
                 } else {
-                    newChild.data = data;
+                    newChild.data.add(data);
                 }
                 return;
             }
         }
 
-        RedTrie<D> newChild = new RedTrie<>(word);
-        newChild.data = data;
+        RedTrie<D, T> newChild = new RedTrie<>(word);
+        newChild.data.add(data);
         children.add(newChild);
 
     }
 
     public D[] search(String word) {
+        String letter = word.substring(0, 1);
+        for(RedTrie<D, T> child : children) {
+            if (child.key.equals(letter)) {
+                if(word.length() > 1){
+                    return search(word.substring(1));
+                } else {
+                    return (D[]) child.data.toArray();
+                }
+            }
+        }
         return null;
+
     }
 
     public void delete(String word) {
+        if(word == null){
+            if(children.size() == 1){
+                System.out.print("this = " + key + "\t");
+                System.out.println("has data: " + !data.isEmpty());
+                RedTrie child = children.get(0);
+                if(child.children.isEmpty()){
+                    if(data.isEmpty()){
+                        System.out.println("child = " + child.key);
+                        System.out.println();
+                        key += child.key;
+                        data.addAll(child.data);
+                        children.remove(child);
+                    }
+                } else {
+                    child.delete(null);
+                }
+            }
+            return;
+        }
+
         String letter = word.substring(0, 1);
-
-        for(RedTrie<D> child : children) {
-            if (child.value.equals(letter)) {
-
+        for(RedTrie<D, T> child : children) {
+            if (child.key.equals(letter)) {
                 if(word.length() > 1){
+                    //recursive
                     child.delete(word.substring(1));
                 }
                 if(child.children.isEmpty()){
                     children.remove(child);
+                } else {
+                    if(word.length() == 1){
+                        child.data.clear();
+                    }
                 }
-                return;
-            } else if (child.value.equals(word)){
+
+            } else if (child.key.equals(word)){
+                //the child is a string node and thus a leaf.
                 children.remove(child);
-                return;
             }
+            this.delete(null);
+
         }
+
+
     }
 
 
@@ -106,11 +145,11 @@ public class RedTrie<D> implements Trie<D>{
         sb.append("digraph mijngraaf {\n");
 
         // Collect all the nodes
-        ArrayList<RedTrie<D>> lookup = new ArrayList<RedTrie<D>>();
+        ArrayList<RedTrie<D, T>> lookup = new ArrayList<RedTrie<D, T>>();
         lookup.add(this);
         for (int i = 0; i < lookup.size(); i++) {
-            RedTrie<D> currentNode = lookup.get(i);
-            for (RedTrie<D> child : currentNode.children) {
+            RedTrie<D, T> currentNode = lookup.get(i);
+            for (RedTrie<D, T> child : currentNode.children) {
                 if (!lookup.contains(child)) {
                     lookup.add(child);
                 }
@@ -119,13 +158,13 @@ public class RedTrie<D> implements Trie<D>{
 
         // Create nodes
         for (int i = 0; i < lookup.size(); i++) {
-            sb.append(String.format("n%d [label=\"%s\"];\n", i, lookup.get(i).value));
+            sb.append(String.format("n%d [label=\"%s\"];\n", i, lookup.get(i).key));
         }
 
         // Create edges
         for (int i = 0; i < lookup.size(); i++) {
-            RedTrie<D> node = lookup.get(i);
-            for (RedTrie<D> child : node.children) {
+            RedTrie<D, T> node = lookup.get(i);
+            for (RedTrie<D, T> child : node.children) {
                 sb.append(String.format("n%d -> n%d;\n", i, lookup.indexOf(child)));
             }
         }
