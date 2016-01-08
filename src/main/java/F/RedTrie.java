@@ -49,7 +49,7 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
                 String tempString = child.key;
                 T tempData = child.data;
                 children.remove(child);
-                RedTrie newChild = new RedTrie<D, T>(letter);
+                RedTrie<D, T> newChild = new RedTrie<D, T>(letter);
                 children.add(newChild);
                 if(tempString.length() > 1){
                     newChild.insert(tempString.substring(1), tempData);
