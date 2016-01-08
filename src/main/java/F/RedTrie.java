@@ -7,8 +7,6 @@ import java.util.List;
 
 /**
  *
- * /**
- * Created by jonathan on 18-12-15.
  * Een red-trie (reduced trie) is een boomstructuur, waarin elke interne knoop één letter bevat en
  nul of meer subknopen heeft, en elke externe knoop (blad) een string bevat. Daarnaast kan een
  knoop willekeurige data bevatten, die iets te maken heeft met het door die knoop
