@@ -46,7 +46,7 @@ public class RedTrieTest {
         trie.insert("okeeeeeeee", "ok");
         trie.insert("okeek", "ok");
 
-        //trie.delete("okeeeeeeee");
+        trie.delete("okeeeeeeee");
         trie.delete("okeek");
 
 

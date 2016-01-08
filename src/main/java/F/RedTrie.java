@@ -119,7 +119,8 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
         }
 
         String letter = word.substring(0, 1);
-        for(RedTrie<D, T> child : children) {
+        for(int i = 0; i<children.size(); i++) {
+            RedTrie<D, T> child = children.get(i);
             if (child.key.equals(letter)) {
                 if(word.length() > 1){
                     //recursive
@@ -132,7 +133,7 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
                         child.data.clear();
                     }
                 }
-                delete(null);
+                child.delete(null);
                 break;
 
             } else if (child.key.equals(word)){
