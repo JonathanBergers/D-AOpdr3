@@ -19,7 +19,7 @@ public interface Trie<D> {
      * @param word Word to search
      * @return Array with Data items
      */
-    D[] search(String word);
+    D search(String word);
 
     /**
      * Delete a word (and all its data objects) from the trie

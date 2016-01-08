@@ -2,6 +2,7 @@ package F;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  *
@@ -20,36 +21,38 @@ import java.util.Collection;
  *NOW IMPLEMENTED WITH DATA CLASS..
  *
  */
-public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
+public class RedTrie<D, T extends Collection<D>> implements Trie<T>{
 
-    private T data = (T) new ArrayList<D>();
+    private T data;
     private String key;
     private ArrayList<RedTrie<D, T>> children = new ArrayList<RedTrie<D, T>>();
 
-    public RedTrie(String key){
+    public RedTrie(String key, T data){
         this.key = key;
+        this.data = data;
     }
-    public RedTrie(){
+    public RedTrie(T data){
         key = "";
+        this.data = data;
     }
 
-    public void insert(String word, D data) {
+    public void insert(String word, T data) {
         String letter = word.substring(0, 1);
 
         for(RedTrie<D, T> child : children) {
-            if(child.key.equals(letter)) {
+            if(child.hasKey(letter)) {
                 if(word.length() > 1){
                     child.insert(word.substring(1), data);
                     return;
                 } else {
-                    child.data.add(data);
+                    child.data.addAll(data);
                     return;
                 }
             } else if(child.key.substring(0,1).equals(letter)) {
                 String tempString = child.key;
                 T tempData = child.data;
                 children.remove(child);
-                RedTrie<D, T> newChild = new RedTrie<D, T>(letter);
+                RedTrie<D, T> newChild = new RedTrie<D, T>(letter, tempData);
                 children.add(newChild);
                 if(tempString.length() > 1){
                     newChild.insert(tempString.substring(1), tempData);
@@ -57,32 +60,42 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
                 if (word.length() > 1){
                     newChild.insert(word.substring(1), data);
                 } else {
-                    newChild.data.add(data);
+                    newChild.data.addAll(data);
                 }
                 return;
             }
         }
 
-        RedTrie<D, T> newChild = new RedTrie<>(word);
-        newChild.data.add(data);
+        RedTrie<D, T> newChild = new RedTrie<D, T>(word, data);
+        newChild.data.addAll(data);
         children.add(newChild);
 
     }
 
-    public D[] search(String word) {
-        String letter = word.substring(0, 1);
-        for(RedTrie<D, T> child : children) {
-            if (child.key.equals(letter)) {
-                if(word.length() > 1){
-                    return search(word.substring(1));
-                } else {
-                    return (D[]) child.data.toArray();
-                }
-            } else if(child.key.equals(word)){
-                return (D[]) child.data.toArray();
+
+    public boolean hasKey(final String key){
+
+        return this.key == key;
+    }
+
+
+    public T search(String word) {
+
+        if(hasKey(word)){
+            return data;
+        }
+
+       for(RedTrie<D, T> child : children) {
+           if(child.hasKey(word)) {
+               return child.data;
+           }
+            if(child.key.startsWith(word.substring(0,1))){
+                return child.search(word.substring(1));
             }
         }
+
         return null;
+
 
     }
 
@@ -91,7 +104,7 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
             if(children.size() == 1){
                 System.out.print("this = " + key + "\t");
                 System.out.println("has data: " + !data.isEmpty());
-                RedTrie child = children.get(0);
+                RedTrie<D, T> child = children.get(0);
                 if(child.children.isEmpty()){
                     if(data.isEmpty()){
                         System.out.println("child = " + child.key);
