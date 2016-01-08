@@ -78,6 +78,8 @@ public class RedTrie<D, T extends Collection<D>> implements Trie<D>{
                 } else {
                     return (D[]) child.data.toArray();
                 }
+            } else if(child.key.equals(word)){
+                return (D[]) child.data.toArray();
             }
         }
         return null;
