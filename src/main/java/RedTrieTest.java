@@ -22,10 +22,14 @@ public class RedTrieTest {
             ArrayList<String> dict = (ArrayList<String>) Files.readAllLines(Paths.get("dictionary.txt"));
 
             long begin = System.currentTimeMillis();
-            dict.indexOf("sibilance");
-            dict.indexOf("sibilance");
+            dict.indexOf("sibness");
+            dict.indexOf("sibness");
+            dict.indexOf("sibness");
+
+
             long end = System.currentTimeMillis();
-            System.out.println(end - begin);
+            System.out.println("MEASUREMENT ARRAYLIST INDEXOF: " + ( end - begin));
+            System.out.println(dict.indexOf("sibness"));
 
 
             RedTrie<String> trie = new RedTrie<>();
@@ -39,11 +43,14 @@ public class RedTrieTest {
                 }
             });
 
-                    begin = System.currentTimeMillis();
-      System.out.println(trie.search("siblilance"));
-            System.out.println(trie.search("siblilance"));
-            end = System.currentTimeMillis();
-            System.out.println(end - begin);
+
+            // MEASURE SEARCH RESULT
+            long begin2 = System.currentTimeMillis();
+            System.out.println(trie.search("sibness"));
+            System.out.println(trie.search("sibness"));
+            System.out.println(trie.search("sibness"));
+            long end2 = System.currentTimeMillis();
+            System.out.println("MEASUREMENT TRIE SEARCH: " + ( end2 - begin2));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +74,6 @@ public class RedTrieTest {
         dict.forEach(new Consumer<String>() {
             @Override
             public void accept(String s) {
-
                 trie.insert(s, s);
 
             }
