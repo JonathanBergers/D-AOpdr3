@@ -45,16 +45,17 @@ public class RedTrie<D> implements Trie<D>{
             if(child.key.equals(letter)) {
                 if(word.length() > 1){
                     child.insert(word.substring(1), data);
-                    return;
+
                 } else {
                     child.data.add(data);
-                    return;
+
                 }
+                return;
             } else if(child.key.substring(0,1).equals(letter)) {
                 String tempString = child.key;
                 List<D> tempData = child.data;
                 children.remove(child);
-                RedTrie<D> newChild = new RedTrie<D>(letter, data);
+                RedTrie<D> newChild = new RedTrie<D>(letter);
                 children.add(newChild);
                 if(tempString.length() > 1){
                     for(D item : tempData){
@@ -81,19 +82,20 @@ public class RedTrie<D> implements Trie<D>{
 
     public List<D> search(String word) {
 
-        if(this.key.equals(word)){
-            return data;
-        }
+
         String letter = word.substring(0, 1);
         for(RedTrie<D> child : children) {
             if (child.key.equals(letter)) {
                 if(word.length() > 1){
-                    return search(word.substring(1));
+                    //System.out.println("return child search from parent \t"+ key);
+                    return child.search(word.substring(1));
                 } else {
 
                     return child.data;
+
                 }
             } else if(child.key.equals(word)){
+
                 return child.data;
             }
         }
@@ -103,12 +105,12 @@ public class RedTrie<D> implements Trie<D>{
 
     public void delete(String word) {
 
-        System.out.print("delete(" + word + ") on " + key);
-        System.out.println("\t \tkey = "+key+ "\t has data = "+!data.isEmpty());
+        //System.out.print("delete(" + word + ") on " + key);
+        //System.out.println("\t \tkey = "+key+ "\t has data = "+!data.isEmpty());
 
         if(word == null){
             if(children.size() == 1){
-                System.out.println("childrensize == 1");
+                //System.out.println("childrensize == 1");
                 //System.out.print("this = " + key + "\t");
                 //System.out.println("has data: " + !data.isEmpty());
                 RedTrie child = children.get(0);
@@ -121,7 +123,7 @@ public class RedTrie<D> implements Trie<D>{
                         children.remove(child);
                     }
                 } else {
-                    System.out.println("delete child");
+                    //System.out.println("delete child");
                     child.delete(null);
                 }
             }
@@ -184,7 +186,7 @@ public class RedTrie<D> implements Trie<D>{
 
         // Create nodes
         for (int i = 0; i < lookup.size(); i++) {
-            sb.append(String.format("n%d [label=\"%s\"];\n", i, lookup.get(i).key));
+            sb.append(String.format("n%d [label=\"%s\"];\n", i, lookup.get(i).key+" "+lookup.get(i).data));
         }
 
         // Create edges
